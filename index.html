@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Troy West Related</title>
+  <meta name="description" content="The official hub for everything Troy West — projects, drops, events, and stories." />
+  <link href="https://fonts.googleapis.com/css2?family=Rock+Salt&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0d0d0f;
+      --panel:#151518;
+      --ink:#e9e9ef;
+      --muted:#a9a9b2;
+      --accent:#86ff7a;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;height:100%}
+    body{
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg); color:var(--ink);
+    }
+    /* Loader */
+    #tw-loader{
+      position:fixed; inset:0; z-index:9999; display:grid; place-items:center;
+      background:#d8cec6; transition:opacity .5s ease, visibility .5s ease;
+    }
+    #tw-loader.is-done{ opacity:0; visibility:hidden; }
+    .loader-circle{
+      width:min(82vmin,520px); aspect-ratio:1/1; border-radius:50%;
+      border:2px solid rgba(0,0,0,.06); display:grid; place-items:center;
+      box-shadow:0 0 0 1px rgba(255,255,255,.35) inset; position:relative;
+      background:transparent;
+    }
+    .logo-scribble{
+      font-family:"Rock Salt", cursive;
+      font-size:clamp(38px, 8vmin, 68px);
+      color:#121212; transform:translateY(-10px) rotate(-1deg);
+      user-select:none; white-space:nowrap;
+    }
+    .tagline{
+      color:rgba(0,0,0,.52);
+      font-size:clamp(12px, 1.8vmin, 16px);
+      letter-spacing:.14em; text-transform:uppercase; margin-top:8px;
+    }
+    .progress{
+      position:absolute; bottom:24px; left:0; right:0; text-align:center;
+      font-weight:700; color:#0c0c10; font-size:clamp(16px, 2.6vmin, 22px);
+    }
+    /* Hero */
+    .hero{
+      min-height:100vh; position:relative; display:flex; align-items:center; justify-content:center;
+      background:
+        radial-gradient(1200px 700px at 15% 90%, rgba(255,130,0,.25), transparent 60%),
+        radial-gradient(900px 600px at 85% 20%, rgba(0,160,255,.22), transparent 55%),
+        linear-gradient(180deg, #151518 0%, #0d0d0f 100%);
+      overflow:hidden;
+    }
+    .hero::after{
+      content:""; position:absolute; inset:0;
+      background:radial-gradient(1200px 800px at 50% 55%, rgba(255,255,255,.06), transparent 60%);
+      pointer-events:none;
+    }
+    .hero-inner{position:relative; z-index:2; text-align:center; width:100%; max-width:1100px; padding:2rem 1rem;}
+    .hero-title{
+      font-family:"Rock Salt", cursive; letter-spacing:.02em;
+      font-size:clamp(42px, 6.8vw, 120px); margin:0 0 .25rem; line-height:.95;
+      text-shadow:0 1px 0 rgba(0,0,0,.3);
+    }
+    .hero-sub{ color:var(--muted); font-weight:600; letter-spacing:.2em; text-transform:uppercase; margin:.25rem 0 2rem; }
+    .corner{
+      position:absolute; bottom:20px; z-index:3; border:1px solid rgba(255,255,255,.7);
+      color:#fff; background:rgba(0,0,0,.2); backdrop-filter:blur(6px);
+      padding:.55rem 1rem; border-radius:8px; text-transform:uppercase; font-weight:700; cursor:pointer;
+    }
+    .corner.menu{ left:20px; } .corner.cart{ right:20px; }
+    /* Overlay */
+    .overlay{
+      position:fixed; inset:0; display:flex; opacity:0; visibility:hidden; transition:opacity .3s ease, visibility .3s ease;
+      background:rgba(0,0,0,.6); backdrop-filter:blur(20px) brightness(.7); z-index:10;
+    }
+    .overlay.active{ opacity:1; visibility:visible; }
+    .overlay-wrap{ display:grid; grid-template-columns: 1fr 1fr; gap:2rem; max-width:1100px; margin:auto; width:100%; padding:2rem; }
+    .overlay h1{ margin:0 0 1rem; font-size:1rem; letter-spacing:.12em; text-transform:uppercase; color:#dcdce2; }
+    .links a{ display:block; font-size:clamp(24px,3.5vw,44px); font-weight:800; color:#f0f0f5; text-decoration:none; margin:.25rem 0; }
+    .links a:hover{ opacity:.85; }
+    .small a{ display:inline-block; margin-right:1rem; color:#d0d0d8; text-decoration:none; font-weight:600; }
+    .close-btn{ align-self:end; justify-self:start; border:1px solid rgba(255,255,255,.7); background:transparent; color:#fff;
+      padding:.6rem 1.2rem; border-radius:6px; font-weight:700; text-transform:uppercase; cursor:pointer; }
+    @media (max-width:900px){
+      .overlay-wrap{ grid-template-columns:1fr; }
+    }
+    /* Sections */
+    main{ background:var(--bg); }
+    .grid{ max-width:1100px; margin:3rem auto; padding:0 1rem; display:grid; grid-template-columns:repeat(12,1fr); gap:1rem; }
+    .grid-head{ grid-column:1/-1; display:flex; justify-content:space-between; align-items:center; }
+    .card{ grid-column:span 4; background:var(--panel); border:1px solid #1f1f23; border-radius:16px; overflow:hidden; padding:1rem; }
+    .card h3{ margin:.25rem 0 .25rem; }
+    .list{ max-width:900px; margin:2rem auto; padding:0 1rem; }
+    .post{ border-bottom:1px solid #1b1b1f; }
+    .post a{ display:flex; align-items:center; gap:1rem; padding:1rem 0; text-decoration:none; color:inherit;}
+    .post time{ min-width:120px; color:#9a9aa4; font-variant-numeric:tabular-nums; }
+    footer{ border-top:1px solid #1a1a1e; padding:1.2rem 1rem; color:#a9a9b2; }
+    .foot{ max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; }
+  </style>
+</head>
+<body>
+
+  <!-- Loader -->
+  <div id="tw-loader" aria-hidden="true">
+    <div class="loader-circle">
+      <div class="logo-scribble">TROY WEST</div>
+      <div class="tagline">CREATIVE HIGH-END SPORT & BUSINESS STUDIO</div>
+      <div class="progress"><span id="num">0</span> / 100</div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1 class="hero-title">TROY WEST</h1>
+      <div class="hero-sub">RELATED</div>
+    </div>
+    <button class="corner menu" id="openMenu">Menu</button>
+    <button class="corner cart" id="openCart">Cart 0</button>
+  </section>
+
+  <!-- Overlay Menu -->
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="overlay-wrap">
+      <div>
+        <h1>Troy West Related</h1>
+        <div class="links">
+          <a href="#projects">Projects</a>
+          <a href="#news">News</a>
+          <a href="#events">Events</a>
+          <a href="#about">About</a>
+        </div>
+        <div class="small" style="margin-top:1rem">
+          <a href="#" aria-label="Instagram">Instagram</a>
+          <a href="#" aria-label="X">X</a>
+          <a href="#" aria-label="LinkedIn">LinkedIn</a>
+        </div>
+        <div class="small" style="margin-top:.5rem">
+          <a href="#">Subscribe</a>
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="#">FAQ</a>
+        </div>
+      </div>
+      <div style="display:grid">
+        <button class="close-btn" id="closeMenu">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section id="projects" class="grid">
+      <div class="grid-head">
+        <h2>Projects</h2>
+        <a class="small" href="#">View all</a>
+      </div>
+      <article class="card"><h3>West Collective</h3><p>Design, sport, community.</p></article>
+      <article class="card"><h3>Podcast: Related</h3><p>Convos with builders & creatives.</p></article>
+      <article class="card"><h3>Media Kit</h3><p>Logos, press photos, bio & contact.</p></article>
+    </section>
+
+    <section id="news" class="list">
+      <div class="grid-head"><h2>News</h2><a class="small" href="#">View all</a></div>
+      <article class="post"><a href="#"><time datetime="2025-08-01">Aug 1, 2025</time><h3>Announcing West Collective Capsule</h3><span>Limited run inspired by LA sport & design.</span></a></article>
+      <article class="post"><a href="#"><time datetime="2025-07-24">Jul 24, 2025</time><h3>Troy on “Women Leaders in Sports” Podcast</h3><span>On creative pressure, operations, and sport.</span></a></article>
+    </section>
+
+    <section id="events" class="list">
+      <div class="grid-head"><h2>Events</h2><a class="small" href="#">View all</a></div>
+      <article class="post"><a href="#"><time datetime="2025-08-24">Aug 24, 2025</time><h3>LA Pop-Up: Fairfax</h3><span>Meet, shop, and preview the next drop.</span></a></article>
+      <article class="post"><a href="#"><time datetime="2025-09-12">Sep 12, 2025</time><h3>Campus Talk: Pepperdine</h3><span>Building careers at the sport × culture edge.</span></a></article>
+    </section>
+
+    <section id="about" class="list" style="max-width:900px; margin:3rem auto; padding:0 1rem;">
+      <h2>About Troy</h2>
+      <p>Troy West is a sports business creative working across operations, design, and community projects. This is the official directory of Troy’s work and collaborations.</p>
+    </section>
+  </main>
+
+  <footer><div class="foot"><div>© <span id="year"></span> TWR</div><div>Contact • Press</div></div></footer>
+
+  <script>
+    // Loader progress
+    (function(){
+      const loader = document.getElementById('tw-loader');
+      const num = document.getElementById('num');
+      let v = 0;
+      const tick = () => {
+        const target = v < 90 ? v + Math.max(1, Math.round((90 - v)*0.12)) : v + 1;
+        v = Math.min(target, 100);
+        num.textContent = v;
+        if(v < 100){ setTimeout(tick, v < 90 ? 30 : 80); }
+        else { setTimeout(()=> loader.classList.add('is-done'), 350); }
+      };
+      window.addEventListener('load', tick);
+    })();
+
+    // Menu overlay
+    const overlay = document.getElementById('overlay');
+    document.getElementById('openMenu').addEventListener('click', ()=>{
+      overlay.classList.add('active'); overlay.setAttribute('aria-hidden','false');
+    });
+    document.getElementById('closeMenu').addEventListener('click', ()=>{
+      overlay.classList.remove('active'); overlay.setAttribute('aria-hidden','true');
+    });
+    document.querySelectorAll('.links a').forEach(a=>{
+      a.addEventListener('click', ()=>{
+        overlay.classList.remove('active'); overlay.setAttribute('aria-hidden','true');
+      });
+    });
+
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^=\"#\"]').forEach(a=>{
+      a.addEventListener('click', e=>{
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if(el){ e.preventDefault(); window.scrollTo({top: el.offsetTop - 60, behavior:'smooth'}); }
+      });
+    });
+  </script>
+</body>
+</html>
